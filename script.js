@@ -1,4 +1,5 @@
-// PickerWheel Contest App - Main JavaScript
+// PickerWheel Contest App - Main JavaScript V2.0 with GitHub Pages Support
+console.log('🎯 PickerWheel V2.0 Script Loaded - GitHub Pages Compatible');
 
 // GitHub Pages path resolver
 function resolveAssetPath(path) {
@@ -293,12 +294,15 @@ class PickerWheelApp {
             
             // Add icon image (with emoji fallback)
             if (prize.icon) {
+                const resolvedPath = resolveAssetPath(prize.icon);
+                console.log(`🖼️ Loading icon for ${prize.name}: ${prize.icon} → ${resolvedPath}`);
+                
                 const iconImage = document.createElementNS('http://www.w3.org/2000/svg', 'image');
                 iconImage.setAttribute('x', -emojiSize/2); // Center horizontally
                 iconImage.setAttribute('y', -emojiSize - 10); // Position above text
                 iconImage.setAttribute('width', emojiSize);
                 iconImage.setAttribute('height', emojiSize);
-                iconImage.setAttribute('href', resolveAssetPath(prize.icon));
+                iconImage.setAttribute('href', resolvedPath);
                 iconImage.setAttribute('preserveAspectRatio', 'xMidYMid meet');
                 
                 // Add error handling - fallback to emoji if image fails
