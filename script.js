@@ -1,4 +1,23 @@
 // PickerWheel Contest App - Main JavaScript
+
+// GitHub Pages path resolver
+function resolveAssetPath(path) {
+    // Check if we're on GitHub Pages
+    const isGitHubPages = window.location.hostname.includes('github.io');
+    const currentPath = window.location.pathname;
+    
+    if (isGitHubPages && currentPath !== '/') {
+        // Extract repository name from path
+        const pathParts = currentPath.split('/').filter(part => part);
+        if (pathParts.length > 0) {
+            const repoName = pathParts[0];
+            return `/${repoName}/${path}`;
+        }
+    }
+    
+    return path;
+}
+
 class PickerWheelApp {
     constructor() {
         this.wheel = document.getElementById('wheel');
@@ -279,11 +298,12 @@ class PickerWheelApp {
                 iconImage.setAttribute('y', -emojiSize - 10); // Position above text
                 iconImage.setAttribute('width', emojiSize);
                 iconImage.setAttribute('height', emojiSize);
-                iconImage.setAttribute('href', prize.icon);
+                iconImage.setAttribute('href', resolveAssetPath(prize.icon));
                 iconImage.setAttribute('preserveAspectRatio', 'xMidYMid meet');
                 
                 // Add error handling - fallback to emoji if image fails
                 iconImage.onerror = () => {
+                    console.warn(`Failed to load icon: ${prize.icon} for prize: ${prize.name}`);
                     iconImage.style.display = 'none';
                     const emojiText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                     emojiText.setAttribute('x', '0');
@@ -292,6 +312,11 @@ class PickerWheelApp {
                     emojiText.setAttribute('font-size', emojiSize);
                     emojiText.textContent = prize.emoji;
                     textGroup.appendChild(emojiText);
+                };
+                
+                // Add load success handler for debugging
+                iconImage.onload = () => {
+                    console.log(`Successfully loaded icon: ${prize.icon} for prize: ${prize.name}`);
                 };
                 
                 textGroup.appendChild(iconImage);
@@ -724,14 +749,14 @@ class PickerWheelApp {
         if (prize.icon) {
             if (this.prizeEmoji.tagName === 'IMG') {
                 // If prizeEmoji is already an img element, just update the src
-                this.prizeEmoji.src = prize.icon;
+                this.prizeEmoji.src = resolveAssetPath(prize.icon);
                 this.prizeEmoji.alt = prize.name;
                 this.prizeEmoji.style.display = 'block';
             } else {
                 // If prizeEmoji is a div, replace it with an img element
                 const prizeIcon = document.createElement('img');
                 prizeIcon.id = 'prizeEmoji'; // Keep the same ID
-                prizeIcon.src = prize.icon;
+                prizeIcon.src = resolveAssetPath(prize.icon);
                 prizeIcon.alt = prize.name;
                 prizeIcon.className = 'prize-icon';
                 
